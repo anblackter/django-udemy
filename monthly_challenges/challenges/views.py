@@ -5,6 +5,8 @@ from django.http import HttpResponse
 def index(request):
     return HttpResponse("This Works!")
 
+def monthly_challenges_by_number(request, month):
+    return HttpResponse(month)
 
 def monthly_challenges(request, month):
     challenge_text = None
@@ -33,5 +35,5 @@ def monthly_challenges(request, month):
     elif month == "december":
         challenge_text = "December Challenge"
     else:
-        return HttpResponse("'This month is not supported")
+        return HttpResponse("This month is not supported")
     return HttpResponse(challenge_text)
