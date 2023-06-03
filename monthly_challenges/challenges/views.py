@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 
 monthly_challenges_dict = {
     'january': 'January Challenge 1',
@@ -22,7 +22,17 @@ def index(request):
 
 
 def monthly_challenges_by_number(request, month):
-    return HttpResponse(month)
+    month_keys = list(monthly_challenges_dict.keys())
+    try:
+        redirect_month = month_keys[month - 1]
+        return HttpResponseRedirect('/challenges/' + redirect_month)
+    except IndexError:
+        return HttpResponse("Invalid Month")
+    # Bellow and other way but not using django structure
+    # try:
+    #     return HttpResponse(monthly_challenges_dict[month_keys[month-1]])
+    # except IndexError:
+    #     return HttpResponse("Invalid Month")
 
 
 def monthly_challenges(request, month):
