@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound, Http404
 from django.urls import reverse
 
 monthly_challenges_dict = {
@@ -14,19 +14,24 @@ monthly_challenges_dict = {
     'september': 'September Challenge 1',
     'october': 'October Challenge 1',
     'november': 'November Challenge 1',
-    'december': 'December Challenge 1'
+    'december': None
 }
 
 
 def index(request):
     months = list(monthly_challenges_dict.keys())
-    months_li = ''
-    for month in months:
-        capitalized_month = month.capitalize()
-        redirec_path = reverse("month-challenges", args=[month])
-        months_li += f'<li><a href="{redirec_path}">{capitalized_month}</li>'
-    render_text = f'<ul>{months_li}</ul>'
-    return HttpResponse(render_text)
+
+    return render(request, 'challenges/index.html', {
+        'months' : months
+        })
+    ### Old way to do the thing, now we are using for in html template
+    # months_li = ''
+    # for month in months:
+    #     capitalized_month = month.capitalize()
+    #     redirec_path = reverse("month-challenges", args=[month])
+    #     months_li += f'<li><a href="{redirec_path}">{capitalized_month}</li>'
+    # render_text = f'<ul>{months_li}</ul>'
+    # return HttpResponse(render_text)
 
 
 def monthly_challenges_by_number(request, month):
@@ -37,7 +42,7 @@ def monthly_challenges_by_number(request, month):
         return HttpResponseRedirect(redirect_path)
     except IndexError:
         return HttpResponseNotFound("Invalid Month")
-    # Bellow and other way but not using django structure
+    ### Bellow and other way but not using django structure
     # try:
     #     return HttpResponse(monthly_challenges_dict[month_keys[month-1]])
     # except IndexError:
@@ -46,6 +51,14 @@ def monthly_challenges_by_number(request, month):
 
 def monthly_challenges(request, month):
     try:
-        return render(request, 'challenges/challenge.html')
+        challenge_text = monthly_challenges_dict[month]
+        return render(request, 'challenges/challenge.html', {
+            # "month": month.capitalize(),
+            "month": month, ### There is a built-in filter in django usefull to run the same that capitalize did (title) ###<title>{{ month|title }} Challenge</title>###
+            "text" : challenge_text
+        })
     except KeyError:
-        return HttpResponseNotFound("No challenges for " + month)
+        raise Http404()
+        #### STATIC WAY TO RENDER THE ERROR WITH from django.template.loader import render_to_string
+        # response_data = render_to_string('404.html')
+        # return HttpResponseNotFound(response_data)
