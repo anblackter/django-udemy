@@ -71,6 +71,7 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'monthly_challenges.wsgi.application'
 
 
@@ -125,3 +126,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Manually added this configuration in order that django take into account the following folder for the static files: /home/anblackter/projects/django-udemy/monthly_challenges/templates/
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+]
