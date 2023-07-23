@@ -21,7 +21,7 @@ class Tag(models.Model):
 class Post(models.Model):
     title = models.CharField(max_length=200)
     excerpt = models.CharField(max_length=200)
-    image_name = models.CharField(max_length=50)
+    image = models.ImageField(upload_to="posts", null=True)
     date = models.DateField(auto_now=True)
     slug = models.SlugField(max_length=200, null=False, editable=False, unique=True, db_index=True)
     content = models.TextField()
@@ -37,4 +37,10 @@ class Post(models.Model):
 
     def __str__(self) -> str:
         return f"{self.title} ({self.date})"
+
+class Comment(models.Model):
+    user_name = models.CharField(max_length=120)
+    user_email = models.EmailField()
+    text = models.TextField(max_length=400)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
 
